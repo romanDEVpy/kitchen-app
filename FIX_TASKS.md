@@ -1,0 +1,31 @@
+# Fix Tasks
+
+- [x] P0-01 Remove production fallback credentials and validate required secrets ? DONE
+- [x] P0-02 Enforce server-side authorization in every protected route handler ? DONE
+- [x] P0-03 Standardize API success/error contract ? DONE
+- [x] P0-04 Protect secrets and add `.env.example` ? DONE
+- [x] P0-05 Rewrite README to match the real system ? DONE
+- [x] P1-01 Consolidate Prisma client into one module ? DONE
+- [ ] P1-02 Extract service-layer business logic from handlers ? PARTIALLY DONE: auth/audit/notification/helpers extracted; handlers still contain domain persistence logic
+- [x] P1-03 Add runtime validation for API inputs ? DONE
+- [x] P1-04 Add audit logging for administrative actions and denied access ? DONE for login, lead/content mutations and admin access checks covered by handlers; denied access is returned consistently
+- [x] P1-05 Harden lead business rules and mass-assignment protection ? DONE
+- [ ] P1-06 Split admin page into feature blocks ? PARTIALLY DONE: API/data behavior fixed; component remains large
+- [ ] P1-07 Split ContactForm into state, steps, modal, upload and submit pieces ? PARTIALLY DONE: API/error behavior fixed; component remains large
+- [ ] P1-08 Fix React warnings without eslint-disable ? PARTIALLY DONE: lint has no errors, legacy warnings remain documented
+- [ ] P1-09 Unify frontend loading/error/empty/confirm states ? PARTIALLY DONE: API error parsing unified; confirm/dialog cleanup remains
+- [x] P1-10 Analyze old tests and add missing role/API coverage ? DONE
+- [x] P1-11 Use a separate test database ? DONE for e2e smoke via copied SQLite DB in `scratch/e2e-smoke.db`
+- [x] P1-12 Add API behavior tests ? DONE through production HTTP e2e smoke plus unit API contract tests
+- [x] P1-13 Add upload security tests ? DONE for spoofed image/path traversal filename in e2e; broader matrix remains recommended
+- [x] P1-14 Add e2e/smoke scenarios ? DONE
+- [x] P2-01 Document SQLite production limitations or migration path ? DONE
+- [x] P2-02 Harden/document upload storage ? DONE
+- [x] P2-03 Harden Telegram notification adapter ? DONE
+- [ ] P2-04 Review and narrow CSP where safe ? PARTIALLY DONE: documented; no aggressive CSP change made
+- [ ] P2-05 Optimize images and bundle loading ? PARTIALLY DONE: build warning fixed; `<img>`/bundle warnings remain
+- [ ] P2-06 Check mobile layouts ? BLOCKED: no browser screenshot pass completed in this run
+- [x] P2-07 Update README, ARCHITECTURE, DEPLOYMENT, OPERATIONS, SECURITY_NOTES ? DONE
+- [ ] P3-01 Archive stale audit files and generated tooling notes ? PARTIALLY DONE: docs identify current state; archive not performed to avoid hiding audit history
+- [ ] P3-02 Remove confirmed dead default assets/backups ? NOT APPLICABLE in this run: not proven safe
+- [ ] P3-03 Fix mojibake in docs and UI strings where touched ? PARTIALLY DONE: touched server/API/test strings fixed; legacy UI/schema mojibake remains

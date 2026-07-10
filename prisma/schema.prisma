@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Product {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  shape           String   // угловая, П-образная, прямая, с островом
+  frontType       String   // AGT, Alvic, Fenix, ЛДСП, ЛДСП EGGER, МДФ ПВХ, МДФ эмаль, Пластик
+  price           Int      // Base price in rubles
+  imageUrl        String   // Path to image
+  width           Int      // mm
+  height          Int      // mm
+  depth           Int      // mm
+  materials       String   // details
+  hardware        String   // Blum, Hettich, Boyard etc.
+  backlight       String   // LED lights
+  description     String
+  seo_title       String?
+  seo_description String?
+  showOnMain      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Promo {
+  id              String   @id @default(uuid())
+  title           String
+  discount        String   // e.g. "15%" or "до 10%"
+  description     String
+  imageUrl        String?
+  seo_title       String?
+  seo_description String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Review {
+  id              String   @id @default(uuid())
+  author          String
+  rating          Int      // 1-5
+  title           String?  // Short summary
+  text            String
+  imageUrl        String?  // Optional photo review (comma-separated for multiple)
+  videoUrl        String?  // Optional video review link
+  seo_title       String?
+  seo_description String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Lead {
+  id            String   @id @default(uuid())
+  name          String
+  phone         String
+  kitchenType   String?
+  installTime   String?
+  kitchenLength String?
+  budget        String?
+  city          String?
+  projectFile   String?
+  status        String   @default("NEW")
+  notes         String   @default("")
+  createdAt     DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  action    String
+  user      String
+  details   String
+  ip        String?
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id                String   @id @default(uuid())
+  username          String   @unique
+  passwordHash      String
+  role              String   @default("manager") // admin or manager
+  canManageProducts Boolean  @default(false)
+  canManageReviews  Boolean  @default(false)
+  canManagePromos   Boolean  @default(false)
+  canManageLeads    Boolean  @default(false)
+  canDeleteLeads    Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
