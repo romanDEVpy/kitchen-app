@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import Catalog from '@/components/ui/Catalog';
 import { ArrowLeft, PhoneCall } from 'lucide-react';

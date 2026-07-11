@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import "./globals.css";
 import Link from "next/link";
 import { Phone, MapPin, Send, MessageSquare } from "lucide-react";

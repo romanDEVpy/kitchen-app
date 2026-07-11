@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import { prisma } from '@/lib/prisma';
 import Catalog from '@/components/ui/Catalog';
