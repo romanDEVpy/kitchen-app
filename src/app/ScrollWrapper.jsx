@@ -30,6 +30,12 @@ const STAGE_CONTENT = {
 
 export default function ScrollWrapper() {
   const [isMobileDevice, setIsMobileDevice] = useState(false);
+  const [stage, setStage] = useState(1);
+  const [displayedStage, setDisplayedStage] = useState(1);
+  const [isFadingOut, setIsFadingOut] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const isLockedRef = useRef(false);
+  const touchStartY = useRef(0);
 
   useEffect(() => {
     const checkDevice = () => {
