@@ -272,6 +272,7 @@ export default function AdminPage() {
   });
   const [editingUserId, setEditingUserId] = useState(null);
   const [showEmployeePassword, setShowEmployeePassword] = useState(false);
+  const isEditingAdmin = editingUserId ? users.find(u => u.id === editingUserId)?.role === 'admin' : false;
 
   const handleLogout = async () => {
     try {
@@ -1121,64 +1122,73 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                <div className="space-y-3 pt-2">
-                  <span className="text-[10px] uppercase font-bold text-neutral-450 tracking-wider block">Разрешения (Права доступа)</span>
-                  
-                  <div className="space-y-2.5">
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={userForm.canManageProducts}
-                        onChange={(e) => setUserForm({...userForm, canManageProducts: e.target.checked})}
-                        className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-650"
-                      />
-                      <span className="text-xs text-neutral-700 font-semibold">Управление товарами</span>
-                    </label>
-
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={userForm.canManageReviews}
-                        onChange={(e) => setUserForm({...userForm, canManageReviews: e.target.checked})}
-                        className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-650"
-                      />
-                      <span className="text-xs text-neutral-700 font-semibold">Управление отзывами</span>
-                    </label>
-
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={userForm.canManagePromos}
-                        onChange={(e) => setUserForm({...userForm, canManagePromos: e.target.checked})}
-                        className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-650"
-                      />
-                      <span className="text-xs text-neutral-700 font-semibold">Управление акциями</span>
-                    </label>
-
-                    <label className="flex items-center space-x-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={userForm.canManageLeads}
-                        onChange={(e) => setUserForm({...userForm, canManageLeads: e.target.checked})}
-                        className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-650"
-                      />
-                      <span className="text-xs text-neutral-700 font-semibold">Просмотр и ведение заявок</span>
-                    </label>
-
-                    <label className="flex items-center space-x-3 cursor-pointer pl-6 border-l border-neutral-200">
-                      <input
-                        type="checkbox"
-                        checked={userForm.canDeleteLeads}
-                        onChange={(e) => setUserForm({...userForm, canDeleteLeads: e.target.checked})}
-                        className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-650"
-                      />
-                      <span className="text-xs text-neutral-700 font-semibold flex items-center space-x-1.5">
-                        <ShieldAlert className="w-3.5 h-3.5 text-red-500" />
-                        <span>Удаление заявок</span>
-                      </span>
-                    </label>
+                {isEditingAdmin ? (
+                  <div className="bg-red-50 border border-red-200/50 rounded-xl p-4 text-red-700 text-xs font-semibold space-y-2 mt-4">
+                    <span className="font-bold uppercase tracking-wider block text-[10px]">Роль: CEO (Администратор)</span>
+                    <p className="font-light leading-relaxed">
+                      Учётная запись CEO имеет полные права доступа ко всем разделам системы по умолчанию. Изменение прав недоступно.
+                    </p>
                   </div>
-                </div>
+                ) : (
+                  <div className="space-y-3 pt-2">
+                    <span className="text-[10px] uppercase font-bold text-neutral-450 tracking-wider block">Разрешения (Права доступа)</span>
+                    
+                    <div className="space-y-2.5">
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={userForm.canManageProducts}
+                          onChange={(e) => setUserForm({...userForm, canManageProducts: e.target.checked})}
+                          className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-650"
+                        />
+                        <span className="text-xs text-neutral-700 font-semibold">Управление товарами</span>
+                      </label>
+
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={userForm.canManageReviews}
+                          onChange={(e) => setUserForm({...userForm, canManageReviews: e.target.checked})}
+                          className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-650"
+                        />
+                        <span className="text-xs text-neutral-700 font-semibold">Управление отзывами</span>
+                      </label>
+
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={userForm.canManagePromos}
+                          onChange={(e) => setUserForm({...userForm, canManagePromos: e.target.checked})}
+                          className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-650"
+                        />
+                        <span className="text-xs text-neutral-700 font-semibold">Управление акциями</span>
+                      </label>
+
+                      <label className="flex items-center space-x-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={userForm.canManageLeads}
+                          onChange={(e) => setUserForm({...userForm, canManageLeads: e.target.checked})}
+                          className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-650"
+                        />
+                        <span className="text-xs text-neutral-700 font-semibold">Просмотр и ведение заявок</span>
+                      </label>
+
+                      <label className="flex items-center space-x-3 cursor-pointer pl-6 border-l border-neutral-200">
+                        <input
+                          type="checkbox"
+                          checked={userForm.canDeleteLeads}
+                          onChange={(e) => setUserForm({...userForm, canDeleteLeads: e.target.checked})}
+                          className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-650"
+                        />
+                        <span className="text-xs text-neutral-700 font-semibold flex items-center space-x-1.5">
+                          <ShieldAlert className="w-3.5 h-3.5 text-red-500" />
+                          <span>Удаление заявок</span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                )}
 
                 <button
                   type="submit"
@@ -1225,15 +1235,15 @@ export default function AdminPage() {
                       )}
                     </div>
 
-                    {u.role !== 'admin' && (
-                      <div className="flex space-x-1 shrink-0">
-                        <button
-                          onClick={() => handleEditUserClick(u)}
-                          className="p-2 rounded-lg bg-white hover:bg-neutral-50 text-neutral-500 hover:text-neutral-850 border border-neutral-200 shadow-sm cursor-pointer"
-                          title="Редактировать права"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
+                    <div className="flex space-x-1 shrink-0">
+                      <button
+                        onClick={() => handleEditUserClick(u)}
+                        className="p-2 rounded-lg bg-white hover:bg-neutral-50 text-neutral-500 hover:text-neutral-850 border border-neutral-200 shadow-sm cursor-pointer"
+                        title="Редактировать сотрудника"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      {u.role !== 'admin' && (
                         <button
                           onClick={() => handleDeleteUser(u.id)}
                           className="p-2 rounded-lg bg-white hover:bg-red-50 text-neutral-400 hover:text-red-650 border border-neutral-200 hover:border-red-200/60 shadow-sm cursor-pointer"
@@ -1241,8 +1251,8 @@ export default function AdminPage() {
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
