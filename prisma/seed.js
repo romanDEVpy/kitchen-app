@@ -1,8 +1,8 @@
-const { PrismaClient } = require('C:/Users/user/.gemini/antigravity/scratch/kitchen-app/src/generated/prisma');
-const { PrismaBetterSqlite3 } = require('C:/Users/user/.gemini/antigravity/scratch/kitchen-app/node_modules/@prisma/adapter-better-sqlite3');
+const { PrismaClient } = require('../src/generated/prisma');
+const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
 const path = require('path');
 
-const dbPath = path.resolve('C:/Users/user/.gemini/antigravity/scratch/kitchen-app', 'dev.db');
+const dbPath = path.resolve(process.cwd(), 'dev.db');
 const adapter = new PrismaBetterSqlite3({ url: `file:${dbPath}` });
 const prisma = new PrismaClient({ adapter });
 
