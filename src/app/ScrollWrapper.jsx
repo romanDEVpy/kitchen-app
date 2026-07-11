@@ -44,10 +44,10 @@ export default function ScrollWrapper() {
       const isMobileUA = /mobi|android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
       // iPad Pro running iPadOS (identifies as Macintosh but supports touch points)
       const isIPadOS = (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      // Generic check for touch screen capability (Surface, Chromebook, Android tablets)
-      const hasTouch = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+      // Tablets (Android tablets, Kindle, etc. that do not match mobile UA)
+      const isTablet = /tablet|playbook|silk/i.test(ua) || (ua.includes('android') && !/mobi/i.test(ua));
       
-      setIsMobileDevice(isMobileUA || isIPadOS || hasTouch);
+      setIsMobileDevice(isMobileUA || isIPadOS || isTablet);
     };
     checkDevice();
   }, []);
