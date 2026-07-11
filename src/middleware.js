@@ -46,7 +46,7 @@ export async function middleware(request) {
 
   // Set strict Content-Security-Policy (allows HMR in dev mode via 'unsafe-eval')
   const isDev = process.env.NODE_ENV === 'development';
-  const cspHeader = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ''}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' ws: wss: https://*.githack.com https://*.githubusercontent.com https://*.jsdelivr.net https://*.polyhaven.org https://*.github.com; font-src 'self' data:; frame-ancestors 'self'; frame-src 'self' https://rutube.ru https://*.rutube.ru;`;
+  const cspHeader = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ''}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' ws: wss: https://*.githack.com https://*.githubusercontent.com https://*.jsdelivr.net https://*.polyhaven.org https://*.github.com; font-src 'self' data:; frame-ancestors 'self'; frame-src 'self' https://rutube.ru https://*.rutube.ru; worker-src 'self' blob:; child-src 'self' blob:;`;
   
   response.headers.set('Content-Security-Policy', cspHeader);
 
