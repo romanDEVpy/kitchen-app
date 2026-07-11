@@ -29,12 +29,22 @@ const STAGE_CONTENT = {
 };
 
 export default function ScrollWrapper() {
-  const [stage, setStage] = useState(1);
-  const [displayedStage, setDisplayedStage] = useState(1);
-  const [isFadingOut, setIsFadingOut] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const isLockedRef = useRef(false);
-  const touchStartY = useRef(0);
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
+
+  useEffect(() => {
+    const checkDevice = () => {
+      const ua = navigator.userAgent.toLowerCase();
+      // Detect general mobile user agents
+      const isMobileUA = /mobi|android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+      // iPad Pro running iPadOS (identifies as Macintosh but supports touch points)
+      const isIPadOS = (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      // Generic check for touch screen capability (Surface, Chromebook, Android tablets)
+      const hasTouch = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+      
+      setIsMobileDevice(isMobileUA || isIPadOS || hasTouch);
+    };
+    checkDevice();
+  }, []);
 
   const handleModelLoad = React.useCallback(() => {
     setIsLoaded(true);
@@ -54,6 +64,7 @@ export default function ScrollWrapper() {
 
   useEffect(() => {
     const handleWheel = (e) => {
+      if (isMobileDevice) return;
       if (window.innerWidth < 1024) return;
       if (!isLoaded) return;
       const isScrollAtTop = window.scrollY < 10;
@@ -96,6 +107,7 @@ export default function ScrollWrapper() {
     };
 
     const handleTouchMove = (e) => {
+      if (isMobileDevice) return;
       if (window.innerWidth < 1024) return;
       if (!isLoaded) return;
       const isScrollAtTop = window.scrollY < 10;
@@ -103,7 +115,6 @@ export default function ScrollWrapper() {
       if (isScrollAtTop) {
         const deltaY = touchStartY.current - e.touches[0].clientY;
 
-        // Swipe Up -> Scroll Down
         if (deltaY > 30) {
           if (stage < 5) {
             if (e.cancelable) e.preventDefault();
@@ -114,7 +125,6 @@ export default function ScrollWrapper() {
             }
           }
         }
-        // Swipe Down -> Scroll Up
         else if (deltaY < -30) {
           if (stage > 1) {
             if (e.cancelable) e.preventDefault();
@@ -137,13 +147,11 @@ export default function ScrollWrapper() {
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchmove', handleTouchMove);
     };
-  }, [stage, isLoaded]);
+  }, [stage, isLoaded, isMobileDevice]);
 
   return (
     <>
-      {/* Mobile/Tablet Static Premium Hero Section */}
-      <div className="block lg:hidden w-full bg-neutral-900 text-white relative overflow-hidden">
-        {/* Background image overlay */}
+      <div className={`w-full bg-neutral-900 text-white relative overflow-hidden ${isMobileDevice ? 'block' : 'block lg:hidden'}`}>
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-40" 
           style={{ backgroundImage: "url('/images/kitchen1.webp')" }} 
@@ -183,14 +191,15 @@ export default function ScrollWrapper() {
       </div>
 
       {/* Desktop splitscreen 3D Showroom */}
-      <div 
-        style={{ touchAction: (isLoaded && stage < 5) ? 'none' : 'auto' }} 
-        className="hidden lg:block relative w-full h-screen overflow-hidden bg-white lg:bg-neutral-50"
-      >
-        {/* Sticky Splitscreen Layout */}
-        <div className="w-full h-full flex flex-col lg:flex-row">
-          {/* Left Side: Fading Information Cards */}
-          <div className="w-full lg:w-1/3 h-[40vh] lg:h-full flex flex-col lg:justify-center justify-start pt-10 lg:pt-0 px-8 lg:px-12 bg-white lg:bg-gradient-to-r lg:from-neutral-50 lg:via-neutral-50/90 lg:to-transparent z-20 pointer-events-none select-none">
+      {!isMobileDevice && (
+        <div 
+          style={{ touchAction: (isLoaded && stage < 5) ? 'none' : 'auto' }} 
+          className="hidden lg:block relative w-full h-screen overflow-hidden bg-white lg:bg-neutral-50"
+        >
+          {/* Sticky Splitscreen Layout */}
+          <div className="w-full h-full flex flex-col lg:flex-row">
+            {/* Left Side: Fading Information Cards */}
+            <div className="w-full lg:w-1/3 h-[40vh] lg:h-full flex flex-col lg:justify-center justify-start pt-10 lg:pt-0 px-8 lg:px-12 bg-white lg:bg-gradient-to-r lg:from-neutral-50 lg:via-neutral-50/90 lg:to-transparent z-20 pointer-events-none select-none">
             <div className="space-y-4 lg:space-y-6 max-w-sm">
               <div className="inline-flex items-center space-x-2 bg-red-50 border border-red-200/60 px-3 py-1 rounded-full text-red-600 text-[10px] uppercase font-black tracking-widest stage-badge-reveal">
                 <Sparkles className="w-3.5 h-3.5" />
@@ -272,6 +281,7 @@ export default function ScrollWrapper() {
 
         </div>
       </div>
-    </>
-  );
+    )}
+  </>
+);
 }
