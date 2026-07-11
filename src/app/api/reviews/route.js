@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { ApiError, ERROR_CODES, handleApiError, successResponse } from '@/lib/apiResponse';
 import { requirePermission } from '@/lib/serverAuth';
-import { readRating, readString } from '@/lib/validators';
+import { readRating, readString, readId } from '@/lib/validators';
 import { logAuditEvent } from '@/server/audit/logAuditEvent';
 
 function validateImageUrl(url) {
@@ -57,5 +57,45 @@ export async function POST(request) {
     return successResponse(review, { status: 201 });
   } catch (error) {
     return handleApiError(error, 'reviews.post');
+  }
+}
+
+export async function PUT(request) {
+  try {
+    const actor = await requirePermission(request, 'canManageReviews');
+    const body = await request.json();
+    const id = readId(body.id);
+    const rawImageUrl = readString(body.imageUrl, 'imageUrl', { max: 1000 });
+    const rawVideoUrl = readString(body.videoUrl, 'videoUrl', { max: 500 });
+
+    const review = await prisma.review.update({
+      where: { id },
+      data: {
+        author: readString(body.author, 'author', { required: true, min: 2, max: 120 }),
+        rating: readRating(body.rating),
+        title: readString(body.title, 'title', { max: 160 }),
+        text: readString(body.text, 'text', { required: true, min: 2, max: 3000 }),
+        imageUrl: validateImageUrl(rawImageUrl),
+        videoUrl: validateVideoUrl(rawVideoUrl),
+        seo_title: readString(body.seo_title, 'seo_title', { max: 180 }),
+        seo_description: readString(body.seo_description, 'seo_description', { max: 300 })
+      }
+    });
+    await logAuditEvent({ actor, action: 'REVIEW_UPDATED', entityType: 'Review', entityId: id, ip: request.headers.get('x-forwarded-for') });
+    return successResponse(review);
+  } catch (error) {
+    return handleApiError(error, 'reviews.put');
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    const actor = await requirePermission(request, 'canManageReviews');
+    const id = readId(new URL(request.url).searchParams.get('id'));
+    await prisma.review.delete({ where: { id } });
+    await logAuditEvent({ actor, action: 'REVIEW_DELETED', entityType: 'Review', entityId: id, ip: request.headers.get('x-forwarded-for') });
+    return successResponse({ deleted: true });
+  } catch (error) {
+    return handleApiError(error, 'reviews.delete');
   }
 }

@@ -311,6 +311,8 @@ export default function AdminPage() {
   const [selectedAdminHardwares, setSelectedAdminHardwares] = useState(['Blum (Австрия)']);
   const [selectedAdminCountertops, setSelectedAdminCountertops] = useState(['ЛЮКСФОРМ (Пластик HPL)']);
   const [editingProductId, setEditingProductId] = useState(null);
+  const [editingPromoId, setEditingPromoId] = useState(null);
+  const [editingReviewId, setEditingReviewId] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [videoUploading, setVideoUploading] = useState(false);
   const [reviewImageUploading, setReviewImageUploading] = useState(false);
@@ -901,17 +903,33 @@ export default function AdminPage() {
     }));
   };
 
+  const resetPromoForm = () => {
+    setPromoForm({ title: '', discount: '', description: '', seo_title: '', seo_description: '' });
+    setEditingPromoId(null);
+  };
+
+  const resetReviewForm = () => {
+    setReviewForm({ author: '', rating: '5', title: '', text: '', imageUrl: '', videoUrl: '', seo_title: '', seo_description: '' });
+    setEditingReviewId(null);
+  };
+
   const handlePromoSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/promos', {
-        method: 'POST',
+      const url = '/api/promos';
+      const method = editingPromoId ? 'PUT' : 'POST';
+      const body = { ...promoForm };
+      if (editingPromoId) {
+        body.id = editingPromoId;
+      }
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(promoForm)
+        body: JSON.stringify(body)
       });
       if (res.ok) {
-        triggerSuccess('Акция успешно добавлена!');
-        setPromoForm({ title: '', discount: '', description: '', seo_title: '', seo_description: '' });
+        triggerSuccess(editingPromoId ? 'Акция успешно обновлена!' : 'Акция успешно добавлена!');
+        resetPromoForm();
         fetchData();
       }
     } catch (err) {
@@ -922,17 +940,78 @@ export default function AdminPage() {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/reviews', {
-        method: 'POST',
+      const url = '/api/reviews';
+      const method = editingReviewId ? 'PUT' : 'POST';
+      const body = {
+        ...reviewForm,
+        rating: parseInt(reviewForm.rating) || 5
+      };
+      if (editingReviewId) {
+        body.id = editingReviewId;
+      }
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...reviewForm,
-          rating: parseInt(reviewForm.rating) || 5
-        })
+        body: JSON.stringify(body)
       });
       if (res.ok) {
-        triggerSuccess('Отзыв успешно добавлен!');
-        setReviewForm({ author: '', rating: '5', title: '', text: '', imageUrl: '', videoUrl: '', seo_title: '', seo_description: '' });
+        triggerSuccess(editingReviewId ? 'Отзыв успешно обновлен!' : 'Отзыв успешно добавлен!');
+        resetReviewForm();
+        fetchData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleEditPromoClick = (promo) => {
+    setEditingPromoId(promo.id);
+    setPromoForm({
+      title: promo.title,
+      discount: promo.discount,
+      description: promo.description || '',
+      seo_title: promo.seo_title || '',
+      seo_description: promo.seo_description || ''
+    });
+  };
+
+  const handleEditReviewClick = (review) => {
+    setEditingReviewId(review.id);
+    setReviewForm({
+      author: review.author,
+      rating: String(review.rating),
+      title: review.title || '',
+      text: review.text,
+      imageUrl: review.imageUrl || '',
+      videoUrl: review.videoUrl || '',
+      seo_title: review.seo_title || '',
+      seo_description: review.seo_description || ''
+    });
+  };
+
+  const handleDeletePromo = async (id) => {
+    if (!confirm('Вы уверены, что хотите удалить эту акцию?')) return;
+    try {
+      const res = await fetch(`/api/promos?id=${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        triggerSuccess('Акция успешно удалена!');
+        fetchData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteReview = async (id) => {
+    if (!confirm('Вы уверены, что хотите удалить этот отзыв?')) return;
+    try {
+      const res = await fetch(`/api/reviews?id=${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        triggerSuccess('Отзыв успешно удален!');
         fetchData();
       }
     } catch (err) {
@@ -1490,15 +1569,31 @@ export default function AdminPage() {
                   {activeTab === 'products'
                     ? (editingProductId ? 'Редактировать кухню' : 'Добавить новую кухню')
                     : activeTab === 'promos'
-                      ? 'Добавить новую акцию'
+                      ? (editingPromoId ? 'Редактировать акцию' : 'Добавить новую акцию')
                       : activeTab === 'reviews'
-                        ? 'Добавить новый отзыв'
+                        ? (editingReviewId ? 'Редактировать отзыв' : 'Добавить новый отзыв')
                         : 'Детали выбранной заявки'}
                 </span>
               </h2>
               {editingProductId && (
                 <button 
                   onClick={resetProductForm}
+                  className="text-neutral-500 hover:text-neutral-950 text-[10px] uppercase font-bold tracking-wider"
+                >
+                  Отмена
+                </button>
+              )}
+              {editingPromoId && (
+                <button 
+                  onClick={resetPromoForm}
+                  className="text-neutral-500 hover:text-neutral-950 text-[10px] uppercase font-bold tracking-wider"
+                >
+                  Отмена
+                </button>
+              )}
+              {editingReviewId && (
+                <button 
+                  onClick={resetReviewForm}
                   className="text-neutral-500 hover:text-neutral-950 text-[10px] uppercase font-bold tracking-wider"
                 >
                   Отмена
@@ -1856,7 +1951,7 @@ export default function AdminPage() {
                   type="submit"
                   className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
                 >
-                  Добавить акцию
+                  {editingPromoId ? 'Сохранить изменения' : 'Добавить акцию'}
                 </button>
               </form>
             )}
@@ -2041,7 +2136,7 @@ export default function AdminPage() {
                   type="submit"
                   className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
                 >
-                  Добавить отзыв
+                  {editingReviewId ? 'Сохранить изменения' : 'Добавить отзыв'}
                 </button>
               </form>
             )}
@@ -2205,8 +2300,8 @@ export default function AdminPage() {
 
                 {/* PROMOS LIST */}
                 {activeTab === 'promos' && promos.map(p => (
-                  <div key={p.id} className="p-4 bg-neutral-50 border border-neutral-200/80 rounded-xl flex justify-between items-center text-xs">
-                    <div className="space-y-1">
+                  <div key={p.id} className="p-4 bg-neutral-50 border border-neutral-200/80 rounded-xl flex justify-between items-center text-xs gap-4">
+                    <div className="space-y-1 max-w-[70%]">
                       <div className="flex items-center space-x-2">
                         <span className="bg-red-50 border border-red-200/80 text-red-600 px-2 py-0.5 rounded font-black">{p.discount}</span>
                         <span className="font-bold text-neutral-900 text-sm">{p.title}</span>
@@ -2217,13 +2312,29 @@ export default function AdminPage() {
                         <span>{p.seo_title || 'Не задано'}</span>
                       </div>
                     </div>
+                    <div className="flex space-x-1 shrink-0">
+                      <button
+                        onClick={() => handleEditPromoClick(p)}
+                        className="p-2 rounded-lg bg-white hover:bg-neutral-50 text-neutral-500 hover:text-neutral-800 border border-neutral-200 shadow-sm cursor-pointer"
+                        title="Редактировать"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeletePromo(p.id)}
+                        className="p-2 rounded-lg bg-white hover:bg-red-50 text-neutral-400 hover:text-red-600 border border-neutral-200 hover:border-red-200/60 shadow-sm cursor-pointer"
+                        title="Удалить"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 ))}
 
                 {/* REVIEWS LIST */}
                 {activeTab === 'reviews' && reviews.map(r => (
-                  <div key={r.id} className="p-4 bg-neutral-50 border border-neutral-200/80 rounded-xl flex justify-between items-center text-xs">
-                    <div className="space-y-1">
+                  <div key={r.id} className="p-4 bg-neutral-50 border border-neutral-200/80 rounded-xl flex justify-between items-center text-xs gap-4">
+                    <div className="space-y-1 max-w-[70%]">
                       <div className="flex items-center space-x-2">
                         <span className="font-bold text-neutral-900 text-sm">{r.title || 'Отзыв'}</span>
                         <span className="text-red-500">{'★'.repeat(r.rating)}</span>
@@ -2234,6 +2345,22 @@ export default function AdminPage() {
                         <span className="text-neutral-600">SEO:</span>
                         <span>{r.seo_title || 'Не задано'}</span>
                       </div>
+                    </div>
+                    <div className="flex space-x-1 shrink-0">
+                      <button
+                        onClick={() => handleEditReviewClick(r)}
+                        className="p-2 rounded-lg bg-white hover:bg-neutral-50 text-neutral-500 hover:text-neutral-800 border border-neutral-200 shadow-sm cursor-pointer"
+                        title="Редактировать"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteReview(r.id)}
+                        className="p-2 rounded-lg bg-white hover:bg-red-50 text-neutral-400 hover:text-red-600 border border-neutral-200 hover:border-red-200/60 shadow-sm cursor-pointer"
+                        title="Удалить"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   </div>
                 ))}
