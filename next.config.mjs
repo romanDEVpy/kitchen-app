@@ -6,6 +6,7 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
+  basePath: '/kitchen-app',
   turbopack: {
     root: projectRoot,
   },

@@ -4,6 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import { Phone, MapPin, Send, MessageSquare } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
+import FetchPatch from "@/components/FetchPatch";
 
 export const metadata = {
   title: "Цветков Мебель | Кухни на заказ в Москве и области",
@@ -25,8 +26,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ru" className="h-full scroll-smooth">
-      <body className="min-h-full flex flex-col bg-white text-neutral-800 font-sans selection:bg-red-600 selection:text-white">
-        
+      <body className="min-h-full flex flex-col bg-white text-neutral-800 font-sans selection:bg-red-650 selection:text-white">
+        <FetchPatch />
         {/* Header Top Info Bar */}
         <header className="hidden md:block w-full bg-neutral-50 border-b border-neutral-200 text-xs text-neutral-600 py-2.5 px-6">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
