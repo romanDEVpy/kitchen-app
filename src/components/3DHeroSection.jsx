@@ -69,7 +69,7 @@ function AssemblyParticles({ count = 200 }) {
 
 // Cinematic assembly model logic with wireframe blueprints and staggered delays
 function AssemblyModel({ animState }) {
-  const { scene } = useGLTF('/models/kitchen_scene.glb');
+  const { scene } = useGLTF('/kitchen-app/models/kitchen_scene.glb');
   const initialPositions = useRef(new Map());
   const wireframesRef = useRef(new Map());
 

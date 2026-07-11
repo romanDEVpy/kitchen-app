@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import gsap from 'gsap';
 
 export default function ScrollModel({ stage, onLoad }) {
-  const { scene: gScene } = useGLTF('/models/kitchen_perfect.glb');
+  const { scene: gScene } = useGLTF('/kitchen-app/models/kitchen_perfect.glb');
   const scene = React.useMemo(() => gScene.clone(), [gScene]);
   const initialPositions = useRef(new Map());
   const wireframes = useRef(new Map());
