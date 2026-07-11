@@ -26,7 +26,6 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/src/generated ./src/generated
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/.env ./.env
 COPY --from=builder /app/next.config.mjs ./next.config.mjs
 
 RUN touch dev.db && chown nextjs:nodejs dev.db && chmod 666 dev.db
