@@ -1,4 +1,4 @@
-﻿FROM node:20-alpine AS deps
+FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package*.json ./
@@ -27,6 +27,7 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/src/generated ./src/generated
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/.env ./.env
+COPY --from=builder /app/next.config.mjs ./next.config.mjs
 
 RUN touch dev.db && chown nextjs:nodejs dev.db && chmod 666 dev.db
 RUN chown -R nextjs:nodejs /app
