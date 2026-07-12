@@ -14,6 +14,7 @@ import {
   Edit3,
   Image as ImageIcon,
   Star,
+  StarHalf,
   Upload,
   XCircle,
   ChevronDown,
@@ -147,6 +148,57 @@ function AdminSingleSelect({ options, selected, onChange }) {
           })}
         </div>
       )}
+    </div>
+  );
+}
+
+// Interactive Star Rating Selector for admin panel
+function StarRatingSelector({ value, onChange }) {
+  const [hoverValue, setHoverValue] = useState(null);
+  const activeValue = hoverValue !== null ? hoverValue : Number(value);
+
+  return (
+    <div className="flex items-center space-x-1.5 py-1">
+      {Array.from({ length: 5 }).map((_, i) => {
+        const starIndex = i + 1;
+        const leftValue = starIndex - 0.5;
+        const rightValue = starIndex;
+
+        let icon = <Star className="w-5 h-5 text-neutral-300 transition-colors" />;
+        if (activeValue >= rightValue) {
+          icon = <Star className="w-5 h-5 fill-red-500 text-red-500 transition-colors" />;
+        } else if (activeValue >= leftValue) {
+          icon = <StarHalf className="w-5 h-5 fill-red-500 text-red-500 transition-colors" />;
+        }
+
+        return (
+          <div 
+            key={i} 
+            className="relative w-5 h-5 select-none"
+            onMouseLeave={() => setHoverValue(null)}
+          >
+            {/* Left Half Hitbox */}
+            <div 
+              className="absolute top-0 left-0 w-[50%] h-full cursor-pointer z-10"
+              onMouseEnter={() => setHoverValue(leftValue)}
+              onClick={() => onChange(leftValue)}
+            />
+            {/* Right Half Hitbox */}
+            <div 
+              className="absolute top-0 right-0 w-[50%] h-full cursor-pointer z-10"
+              onMouseEnter={() => setHoverValue(rightValue)}
+              onClick={() => onChange(rightValue)}
+            />
+            {/* Icon */}
+            <div className="absolute inset-0 pointer-events-none">
+              {icon}
+            </div>
+          </div>
+        );
+      })}
+      <span className="text-xs font-black text-neutral-700 ml-2 bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded-lg shadow-sm">
+        {activeValue.toFixed(1)} / 5.0
+      </span>
     </div>
   );
 }
@@ -944,7 +996,7 @@ export default function AdminPage() {
       const method = editingReviewId ? 'PUT' : 'POST';
       const body = {
         ...reviewForm,
-        rating: parseInt(reviewForm.rating) || 5
+        rating: parseFloat(reviewForm.rating) || 5
       };
       if (editingReviewId) {
         body.id = editingReviewId;
@@ -1972,15 +2024,10 @@ export default function AdminPage() {
                   </div>
                   <div>
                     <label className="text-[10px] uppercase font-bold text-neutral-500 tracking-wider">Оценка (1-5)</label>
-                    <select
+                    <StarRatingSelector
                       value={reviewForm.rating}
-                      onChange={(e) => setReviewForm({...reviewForm, rating: e.target.value})}
-                      className="w-full bg-white border border-neutral-200 rounded-lg px-3 py-2 text-xs text-neutral-900 mt-1 focus:border-red-600 focus:outline-none shadow-sm"
-                    >
-                      <option value="5">5 звезд</option>
-                      <option value="4">4 звезды</option>
-                      <option value="3">3 звезды</option>
-                    </select>
+                      onChange={(ratingVal) => setReviewForm({...reviewForm, rating: ratingVal})}
+                    />
                   </div>
                 </div>
                 <div>
@@ -2337,7 +2384,18 @@ export default function AdminPage() {
                     <div className="space-y-1 max-w-[70%]">
                       <div className="flex items-center space-x-2">
                         <span className="font-bold text-neutral-900 text-sm">{r.title || 'Отзыв'}</span>
-                        <span className="text-red-500">{'★'.repeat(r.rating)}</span>
+                        <div className="flex space-x-0.5 text-red-500">
+                          {Array.from({ length: 5 }).map((_, i) => {
+                            const starIndex = i + 1;
+                            if (r.rating >= starIndex) {
+                              return <Star key={i} className="w-3 h-3 fill-current" />;
+                            } else if (r.rating >= starIndex - 0.5) {
+                              return <StarHalf key={i} className="w-3 h-3 fill-current" />;
+                            } else {
+                              return <Star key={i} className="w-3 h-3 text-neutral-300" />;
+                            }
+                          })}
+                        </div>
                       </div>
                       <p className="text-neutral-500 line-clamp-1 italic">&quot;{r.text}&quot;</p>
                       <span className="text-[10px] text-neutral-400 block">Автор: {r.author}</span>

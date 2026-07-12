@@ -31,7 +31,14 @@ export function readPositiveInt(value, field, { required = true, min = 1, max = 
 }
 
 export function readRating(value) {
-  return readPositiveInt(value, 'rating', { min: 1, max: 5 });
+  if (value === undefined || value === null || value === '') {
+    throw new ApiError(ERROR_CODES.VALIDATION_ERROR, `rating is required`, 400);
+  }
+  const number = Number(value);
+  if (Number.isNaN(number) || number < 1 || number > 5) {
+    throw new ApiError(ERROR_CODES.VALIDATION_ERROR, `rating must be a number between 1 and 5`, 400);
+  }
+  return Math.round(number * 2) / 2;
 }
 
 export function readId(value, field = 'id') {

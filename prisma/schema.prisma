@@ -44,7 +44,7 @@ model Promo {
 model Review {
   id              String   @id @default(uuid())
   author          String
-  rating          Int      // 1-5
+  rating          Float    // 1-5
   title           String?  // Short summary
   text            String
   imageUrl        String?  // Optional photo review (comma-separated for multiple)

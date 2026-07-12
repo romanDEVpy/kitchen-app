@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageSquare, Star, ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { MessageSquare, Star, StarHalf, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 
 function getRutubeEmbedUrl(url) {
   if (!url) return null;
@@ -223,9 +223,16 @@ export default function Reviews({ reviews }) {
                         <span className="text-[10px] text-neutral-500 block mt-0.5">Автор: {review.author}</span>
                       </div>
                       <div className="flex space-x-0.5 text-red-500 shrink-0">
-                        {Array.from({ length: review.rating }).map((_, i) => (
-                          <Star key={i} className="w-3.5 h-3.5 fill-red-500 text-red-500" />
-                        ))}
+                        {Array.from({ length: 5 }).map((_, i) => {
+                          const starIndex = i + 1;
+                          if (review.rating >= starIndex) {
+                            return <Star key={i} className="w-3.5 h-3.5 fill-red-500 text-red-500" />;
+                          } else if (review.rating >= starIndex - 0.5) {
+                            return <StarHalf key={i} className="w-3.5 h-3.5 fill-red-500 text-red-500" />;
+                          } else {
+                            return <Star key={i} className="w-3.5 h-3.5 text-neutral-300" />;
+                          }
+                        })}
                       </div>
                     </div>
                     
@@ -319,9 +326,16 @@ export default function Reviews({ reviews }) {
                     <span className="text-[10px] text-neutral-500 block mt-0.5">Автор: {review.author}</span>
                   </div>
                   <div className="flex space-x-0.5 text-red-500 shrink-0">
-                    {Array.from({ length: review.rating }).map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-red-500 text-red-500" />
-                    ))}
+                    {Array.from({ length: 5 }).map((_, i) => {
+                      const starIndex = i + 1;
+                      if (review.rating >= starIndex) {
+                        return <Star key={i} className="w-3.5 h-3.5 fill-red-500 text-red-500" />;
+                      } else if (review.rating >= starIndex - 0.5) {
+                        return <StarHalf key={i} className="w-3.5 h-3.5 fill-red-500 text-red-500" />;
+                      } else {
+                        return <Star key={i} className="w-3.5 h-3.5 text-neutral-300" />;
+                      }
+                    })}
                   </div>
                 </div>
                 
