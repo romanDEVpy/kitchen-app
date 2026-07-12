@@ -158,45 +158,47 @@ function StarRatingSelector({ value, onChange }) {
   const activeValue = hoverValue !== null ? hoverValue : Number(value);
 
   return (
-    <div className="flex items-center space-x-1.5 py-1">
-      {Array.from({ length: 5 }).map((_, i) => {
-        const starIndex = i + 1;
-        const leftValue = starIndex - 0.5;
-        const rightValue = starIndex;
+    <div className="flex items-center py-1">
+      <div className="flex items-center space-x-0">
+        {Array.from({ length: 5 }).map((_, i) => {
+          const starIndex = i + 1;
+          const leftValue = starIndex - 0.5;
+          const rightValue = starIndex;
 
-        let icon = <Star className="w-5 h-5 text-neutral-300 transition-colors" />;
-        if (activeValue >= rightValue) {
-          icon = <Star className="w-5 h-5 fill-red-500 text-red-500 transition-colors" />;
-        } else if (activeValue >= leftValue) {
-          icon = <StarHalf className="w-5 h-5 fill-red-500 text-red-500 transition-colors" />;
-        }
+          let icon = <Star className="w-5.5 h-5.5 text-neutral-300 transition-colors" />;
+          if (activeValue >= rightValue) {
+            icon = <Star className="w-5.5 h-5.5 fill-red-500 text-red-500 transition-colors" />;
+          } else if (activeValue >= leftValue) {
+            icon = <StarHalf className="w-5.5 h-5.5 fill-red-500 text-red-500 transition-colors" />;
+          }
 
-        return (
-          <div 
-            key={i} 
-            className="relative w-5 h-5 select-none"
-            onMouseLeave={() => setHoverValue(null)}
-          >
-            {/* Left Half Hitbox */}
+          return (
             <div 
-              className="absolute top-0 left-0 w-[50%] h-full cursor-pointer z-10"
-              onMouseEnter={() => setHoverValue(leftValue)}
-              onClick={() => onChange(leftValue)}
-            />
-            {/* Right Half Hitbox */}
-            <div 
-              className="absolute top-0 right-0 w-[50%] h-full cursor-pointer z-10"
-              onMouseEnter={() => setHoverValue(rightValue)}
-              onClick={() => onChange(rightValue)}
-            />
-            {/* Icon */}
-            <div className="absolute inset-0 pointer-events-none">
-              {icon}
+              key={i} 
+              className="relative w-7.5 h-7.5 select-none"
+              onMouseLeave={() => setHoverValue(null)}
+            >
+              {/* Left Half Hitbox */}
+              <div 
+                className="absolute top-0 left-0 w-[50%] h-full cursor-pointer z-10"
+                onMouseEnter={() => setHoverValue(leftValue)}
+                onClick={() => onChange(leftValue)}
+              />
+              {/* Right Half Hitbox */}
+              <div 
+                className="absolute top-0 right-0 w-[50%] h-full cursor-pointer z-10"
+                onMouseEnter={() => setHoverValue(rightValue)}
+                onClick={() => onChange(rightValue)}
+              />
+              {/* Icon (Centered inside w-7.5 h-7.5 hitbox) */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                {icon}
+              </div>
             </div>
-          </div>
-        );
-      })}
-      <span className="text-xs font-black text-neutral-700 ml-2 bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded-lg shadow-sm">
+          );
+        })}
+      </div>
+      <span className="whitespace-nowrap text-xs font-black text-neutral-700 ml-3 bg-neutral-50 border border-neutral-200 px-2.5 py-1 rounded-xl shadow-sm">
         {activeValue.toFixed(1)} / 5.0
       </span>
     </div>
