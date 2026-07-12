@@ -158,7 +158,7 @@ function StarRatingSelector({ value, onChange }) {
   const activeValue = hoverValue !== null ? hoverValue : Number(value);
 
   return (
-    <div className="flex items-center py-1">
+    <div className="flex items-center justify-center py-2 px-4 bg-neutral-50/50 border border-neutral-200/60 rounded-xl mt-1.5 shadow-sm/5">
       <div className="flex items-center space-x-0">
         {Array.from({ length: 5 }).map((_, i) => {
           const starIndex = i + 1;
