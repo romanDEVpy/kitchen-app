@@ -2013,7 +2013,6 @@ export default function AdminPage() {
             {/* REVIEW FORM */}
             {activeTab === 'reviews' && (
               <form onSubmit={handleReviewSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-[10px] uppercase font-bold text-neutral-500 tracking-wider">Имя автора</label>
                     <input
@@ -2031,7 +2030,6 @@ export default function AdminPage() {
                       onChange={(ratingVal) => setReviewForm({...reviewForm, rating: ratingVal})}
                     />
                   </div>
-                </div>
                 <div>
                   <label className="text-[10px] uppercase font-bold text-neutral-500 tracking-wider">Заголовок отзыва</label>
                   <input
